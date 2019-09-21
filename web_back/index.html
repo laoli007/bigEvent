@@ -13,26 +13,23 @@
   </head>
 
   <body>
-      <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+      <div class="modal fade" tabindex="-1" role="dialog" id="logout_show">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">错误提示</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">注销登录</h4>
               </div>
               <div class="modal-body">
-                <p id="pResult"></p>
+                <p>你确定要注销吗&hellip;</p>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_logout">注销</button>
               </div>
-            </div>
-            <!-- /.modal-content -->
-          </div>
-          <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     <div class="sider">
       <a href="#" class="logo"><img src="images/logo02.png" alt="logo"/></a>
       <div class="user_info">
@@ -157,14 +154,20 @@
         }
       }
     </script>
-
+    <script src="./js/lib/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
     <script src="./js/utils/config.js"></script>
     <script src="./js/utils/user.js"></script>
-
     <script>
         $('#btnLogout').click(function(){
-          $('#myModal').
-
+          $('#logout_show').modal('show');
+          $('#btn_logout').click(function(){
+            administrator.logout(function(res){
+              if(res.code == 200){
+                window.location.href = './login.html';
+              }
+            });
+          });
         });
     </script>
   </body>
