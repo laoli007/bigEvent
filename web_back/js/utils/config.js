@@ -6,5 +6,6 @@ var userUrl = {
 }
 var categoryUrl = {
     category_search:'http://localhost:8000/admin/category_search',
-    category_add:'http://localhost:8000/admin/category_add'
+    category_add:'http://localhost:8000/admin/category_add',
+    category_edit:'http://localhost:8000/admin/category_edit'
 }

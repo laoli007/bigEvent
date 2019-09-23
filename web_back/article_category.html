@@ -85,27 +85,16 @@
     <script src="./js/lib/template-web.js"></script>
     <script id="model" type="text/html">
         {{ each data item }}
-        <tr>
+        <tr class='tr'>
             <td>{{item.name}}</td>
             <td>{{item.slug}}</td>
             <td class="text-center">
-                <a href='javascript:editTr({"id":"{{item.id}}","slug":"{{item.slug}}","name":"{{item.name}}"});'
-                    class="btn btn-info btn-xs">编辑</a>
-                <a href="javascript:deleteTr( 4 );" class="btn btn-danger btn-xs">删除</a>
+                <a href='javascript:;' class="btn btn-info btn-xs" data-id="{{item.id}}">编辑</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
         {{/each}}
     </script>
-    <!-- <script id="addModel" type="text/html">
-        <tr>
-            <td>{{item.name}}</td>
-            <td>{{item.slug}}</td>
-            <td class="text-center">
-                <a href='javascript:editTr({"id":"{{item.id}}","slug":"{{item.slug}}","name":"{{item.name}}"});' class="btn btn-info btn-xs">编辑</a>
-                <a href="javascript:deleteTr( 4 );" class="btn btn-danger btn-xs">删除</a>
-            </td>
-        </tr>
-    </script> -->
     <script>
         var query_category = function () {
             category.category_search(function (res) {
@@ -114,6 +103,7 @@
                 $('#category_tbody').html(htmlStr);
             })
         }
+        var edit_id;
         $(function () {
             query_category();
             // $('#add_category').click
@@ -123,38 +113,51 @@
             backdrop: false
         });
         $('#add_category_btn').click(function () {
+            $('#model_add').text('新增');
             $('#recipient-name').val('');
             $('#recipient-slug').val('');
             $('#wrong_alert').hide();
+
         })
         $('#model_shutoff').click(function () {
             $('#addModal').modal('hide');
         });
-
-        $('#model_add').click(function () {
-            // alert('add');
-            var add_name = $('#recipient-name').val();
-            var add_slug = $('#recipient-slug').val();
-            category.category_add(add_name, add_slug, function (res) {
-                // console.log
-                if (add_name == '' || add_slug == '') {
-                    $('#wrong_alert').show().eq(0).text('分类名不能为空，请重新输入');
-                } else if (res.code == 200) {
-                    query_category();
-                    $('#addModal').modal('hide');
-                } else if (res.code == 400) {
-                    $('#wrong_alert').show().eq(0).text('该分类以被使用，请重新输入');
-                }
-            })
-
-        });
-
-        $('.category_table').delegate('a', 'click', function () {
-            if ($(this).hasClass('btn-info')) {
-                $('#addModal .modal-title').html('修改分类名称');
-                $('#addModal').modal('show');
-            }
+        $('#category_tbody').on('click', '.btn-info', function (e) {
+            $('#addModal').modal('show');
+            $('#addModal .modal-title').html('修改分类名称');
+            $('#model_add').text('修改');
+            $('#wrong_alert').hide();
+            edit_id =$(this).data('id');
+            // edit_id = e.currentTarget.dataset.id;
+            
+            $('#recipient-name').val($(this).parents('#category_tbody .tr').find('td').eq(0).text());
+            $('#recipient-slug').val($(this).parents('#category_tbody .tr').find('td').eq(1).text());
         })
+        $('#model_add').click(function () {
+            if ($('#model_add').text() == '新增') {
+                var add_name = $('#recipient-name').val();
+                var add_slug = $('#recipient-slug').val();
+                category.category_add(add_name, add_slug, function (res) {
+                    if (add_name == '' || add_slug == '') {
+                        $('#wrong_alert').show().eq(0).text('分类名不能为空，请重新输入');
+                    } else if (res.code == 200) {
+                        query_category();
+                        $('#addModal').modal('hide');
+                    } else if (res.code == 400) {
+                        $('#wrong_alert').show().eq(0).text('该分类以被使用，请重新输入');
+                    }
+                })
+            } else if ($('#model_add').text() == '修改') {
+                category.category_edit(edit_id,$('#recipient-name').val(),$('#recipient-slug').val(),function(res){
+                    if(res.code == 200 ) {
+                        query_category();
+                        $('#addModal').modal('hide');
+                    }else if(res.code == 400) {
+                        $('#wrong_alert').show().eq(0).text(res.msg);
+                    }
+                })
+            }
+        });
     </script>
 
 </body>
