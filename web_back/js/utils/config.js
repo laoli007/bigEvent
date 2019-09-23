@@ -5,5 +5,6 @@ var userUrl = {
     getInfo:'http://localhost:8000/admin/getuser',
 }
 var categoryUrl = {
-    category_search:'http://localhost:8000/admin/category_search'
+    category_search:'http://localhost:8000/admin/category_search',
+    category_add:'http://localhost:8000/admin/category_add'
 }

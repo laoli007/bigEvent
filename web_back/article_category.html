@@ -42,7 +42,8 @@
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-center">
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal">新增分类</a>
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal"
+                                id="add_category_btn">新增分类</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -55,7 +56,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                    <h4 class="modal-title">新增分类</h4>
+                    <h4 class="modal-title" id="add_category">新增分类</h4>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -65,7 +66,10 @@
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="control-label">分类别名:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <input type="text" class="form-control" id="recipient-slug">
+                        </div>
+                        <div class="alert alert-danger" role="alert" id="wrong_alert">
+                            <a href="#" class="alert-link"></a>
                         </div>
                     </form>
                 </div>
@@ -85,33 +89,64 @@
             <td>{{item.name}}</td>
             <td>{{item.slug}}</td>
             <td class="text-center">
-                <a href='javascript:editTr({"id":"{{item.id}}","slug":"{{item.slug}}","name":"{{item.name}}"});' class="btn btn-info btn-xs">编辑</a>
+                <a href='javascript:editTr({"id":"{{item.id}}","slug":"{{item.slug}}","name":"{{item.name}}"});'
+                    class="btn btn-info btn-xs">编辑</a>
                 <a href="javascript:deleteTr( 4 );" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
         {{/each}}
     </script>
+    <!-- <script id="addModel" type="text/html">
+        <tr>
+            <td>{{item.name}}</td>
+            <td>{{item.slug}}</td>
+            <td class="text-center">
+                <a href='javascript:editTr({"id":"{{item.id}}","slug":"{{item.slug}}","name":"{{item.name}}"});' class="btn btn-info btn-xs">编辑</a>
+                <a href="javascript:deleteTr( 4 );" class="btn btn-danger btn-xs">删除</a>
+            </td>
+        </tr>
+    </script> -->
     <script>
-        $(function () {
+        var query_category = function () {
             category.category_search(function (res) {
-                var htmlStr = template('model',res)
-                console.log(htmlStr);
+                var htmlStr = template('model', res)
+                // console.log(htmlStr);
                 $('#category_tbody').html(htmlStr);
             })
+        }
+        $(function () {
+            query_category();
+            // $('#add_category').click
         })
         $('#addModal').modal({
             show: false,
             backdrop: false
         });
-
+        $('#add_category_btn').click(function () {
+            $('#recipient-name').val('');
+            $('#recipient-slug').val('');
+            $('#wrong_alert').hide();
+        })
         $('#model_shutoff').click(function () {
-            alert('shutoff');
             $('#addModal').modal('hide');
         });
 
         $('#model_add').click(function () {
-            alert('add');
-            $('#addModal').modal('hide');
+            // alert('add');
+            var add_name = $('#recipient-name').val();
+            var add_slug = $('#recipient-slug').val();
+            category.category_add(add_name, add_slug, function (res) {
+                // console.log
+                if (add_name == '' || add_slug == '') {
+                    $('#wrong_alert').show().eq(0).text('分类名不能为空，请重新输入');
+                } else if (res.code == 200) {
+                    query_category();
+                    $('#addModal').modal('hide');
+                } else if (res.code == 400) {
+                    $('#wrong_alert').show().eq(0).text('该分类以被使用，请重新输入');
+                }
+            })
+
         });
 
         $('.category_table').delegate('a', 'click', function () {
