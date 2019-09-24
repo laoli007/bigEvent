@@ -10,3 +10,6 @@ var categoryUrl = {
     category_edit:'http://localhost:8000/admin/category_edit',
     category_delete:'http://localhost:8000/admin/category_delete'
 }
+var articleUrl = {
+    article_search:'http://localhost:8000/admin/search'
+}
