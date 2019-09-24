@@ -11,5 +11,9 @@ var category = {
         $.post(categoryUrl.category_edit,{id:id,name:name,slug:slug},function(res){
             callBack(res);
         })
+    },category_delete:function(id,callBack){
+        $.post(categoryUrl.category_delete,{id:id},function(res){
+            callBack(res);
+        })
     }
 }

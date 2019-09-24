@@ -122,14 +122,13 @@
         $('#model_shutoff').click(function () {
             $('#addModal').modal('hide');
         });
-        $('#category_tbody').on('click', '.btn-info', function (e) {
+        $('#category_tbody').on('click', '.btn-info', function () {
             $('#addModal').modal('show');
             $('#addModal .modal-title').html('修改分类名称');
             $('#model_add').text('修改');
             $('#wrong_alert').hide();
             edit_id =$(this).data('id');
             // edit_id = e.currentTarget.dataset.id;
-            
             $('#recipient-name').val($(this).parents('#category_tbody .tr').find('td').eq(0).text());
             $('#recipient-slug').val($(this).parents('#category_tbody .tr').find('td').eq(1).text());
         })
@@ -158,6 +157,13 @@
                 })
             }
         });
+        $('#category_tbody').on('click', '.btn-danger', function () {
+            edit_id =$(this).siblings().data('id');
+            category.category_delete(edit_id,function(res){
+                query_category();
+                $('#addModal').modal('hide');
+            })
+        })
     </script>
 
 </body>
